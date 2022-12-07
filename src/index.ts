@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { ALL } from 'dns';
+
 const prisma = new PrismaClient()
 
 const express = require("express");

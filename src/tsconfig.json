@@ -8,7 +8,7 @@
     "strict": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "outDir": ".",
+    "outDir": "dist",
     "lib": ["esnext"],
   },
   "exclude": ["node_modules", "**/node_modules/*"]
