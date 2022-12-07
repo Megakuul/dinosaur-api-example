@@ -11,16 +11,7 @@ datasource db {
 }
 
 model dinosaur {
-  id        Int @id @default(autoincrement())
-  name      String @db.VarChar(255)
-  food      food @relation(fields: [foodId],references: [id])
-  foodId    Int
-
-  @@index(foodId)
-}
-
-model food {
-  id        Int @id @default(autoincrement())
-  name      String @db.VarChar(255)
-  dinosaurs dinosaur[]
+  id          Int @id @default(autoincrement())
+  name        String @db.VarChar(255)
+  description String @db.VarChar(255)
 }
