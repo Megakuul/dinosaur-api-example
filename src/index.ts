@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-import { ALL } from 'dns';
+import { Prisma, PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -13,46 +12,65 @@ app.use(express.json());
 
 
 app.get("/dinosaurs", async (req: any, res: any) => {
+    const test = req.body.name;
 
-    const dinosaurs = await prisma.dinosaur.findMany();
-    res.json(dinosaurs);
+    try {
+        const dinosaurs = await prisma.dinosaur.findMany();
+        res.json(dinosaurs);
+    } catch (error) {
+        console.log(error);
+        res.json(error + "cannot connect to database");
+    }
 });
  
 app.get("/dinosaur", async (req: any, res: any) => {
     const dinosaurname = req.query.name;
 
-    const dinosaur = await prisma.dinosaur.findMany({
-        where: {
-            name: dinosaurname
-        }
-    });
-
-    res.json(dinosaur);
+    try {
+        const dinosaur = await prisma.dinosaur.findMany({
+            where: {
+                name: dinosaurname
+            }
+        });
+    
+        res.json(dinosaur);
+    } catch (error) {
+        console.log(error);
+        res.json(error + "cannot connect to database");
+    }
 });
 
 app.post("/dinosaur", async (req: any, res: any) => {
     const newdinosaur = req.body;
-
-    const dinosaur = await prisma.dinosaur.create({
-        data: {
-            name: newdinosaur.name,
-            description: newdinosaur.description
-        }
-    });
-
-    res.json({dinosaur});
+    try {
+        const dinosaur = await prisma.dinosaur.create({
+            data: {
+                name: newdinosaur.name,
+                description: newdinosaur.description,
+                creator: newdinosaur.creator
+            }
+        });
+        res.json({dinosaur});
+    } catch (error) {
+        console.log(error);
+        res.json(error + "cannot connect to database");
+    }
 });
 
 app.delete("/dinosaur", async (req: any, res: any) => {
     const dinosaurname = req.query.name;
+    try {
+        const dinosaur = await prisma.dinosaur.deleteMany({
+            where: {
+                name: dinosaurname
+            }
+        })
     
-    const dinosaur = await prisma.dinosaur.deleteMany({
-        where: {
-            name: dinosaurname
-        }
-    })
-
-    res.json({dinosaur});
+        res.json({dinosaur});
+    } catch (error) {
+        console.log(error);
+        res.json(error + "cannot connect to database");
+    }
 });
 
 app.listen(port, () => {

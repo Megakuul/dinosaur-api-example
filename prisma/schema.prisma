@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -11,7 +12,9 @@ datasource db {
 }
 
 model dinosaur {
-  id          Int @id @default(autoincrement())
-  name        String @db.VarChar(255)
-  description String @db.VarChar(255)
+  id            Int @id @default(autoincrement())
+  name          String @db.VarChar(255)
+  description   String @db.VarChar(255)
+  creator       String @db.VarChar(255)
+  creationTime  DateTime @default(now())
 }
