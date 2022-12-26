@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/apiConnector.dart';
 import 'package:frontend/ext.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +37,13 @@ class mainPage extends StatefulWidget {
 }
 
 class _mainPageState extends State<mainPage> {
-
+  late Future<List<dynamic>> dinosaurs;
+  
+  @override
+  void initState() {
+    super.initState();
+    dinosaurs = fetchDinosaurs("https://api.gehege.ch/dinosaurs");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,13 +110,18 @@ class _mainPageState extends State<mainPage> {
           ),
         )
       ),
-      body: const Center(
-        child:
-          TextField(
-            mouseCursor: SystemMouseCursors.text,
-            autocorrect: true,
-
-        ),
+      body: Center(
+        child: FutureBuilder(
+          future: dinosaurs,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return dinosaurList(list: snapshot.data);
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+            return const CircularProgressIndicator();
+          },
+        )
       ),// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
