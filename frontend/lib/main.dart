@@ -1,15 +1,22 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/apiConnector.dart';
 import 'package:frontend/ext.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load();
   runApp(const MyApp());
 }
 
 TextEditingController _searchControlr = TextEditingController();
+
+final String GET_DINOSAURS = "https://${dotenv.env['API_URL']}/dinosaurs";
+final String GET_DINOSAUR = "https://${dotenv.env['API_URL']}/dinosaur?name=";
+final String POST_DINOSAUR = "https://${dotenv.env['API_URL']}/dinosaur";
+final String DELETE_DINOSAUR = "https://${dotenv.env['API_URL']}/dinosaur?name=";
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -42,7 +49,7 @@ class _mainPageState extends State<mainPage> {
   @override
   void initState() {
     super.initState();
-    dinosaurs = fetchDinosaurs("https://api.gehege.ch/dinosaurs");
+    dinosaurs = fetchDinosaurs(GET_DINOSAURS);
   }
 
   @override
@@ -64,7 +71,12 @@ class _mainPageState extends State<mainPage> {
                   hintStyle: TextStyle(color: Colors.grey)
                 ),
                 onSubmitted: (String text) => {
-
+                  setState(() {
+                    if (text == "")
+                      dinosaurs = fetchDinosaurs(GET_DINOSAURS);
+                    else
+                      dinosaurs = fetchDinosaurs(GET_DINOSAUR + text);
+                  })
                 },
             ),
           ),
@@ -73,7 +85,9 @@ class _mainPageState extends State<mainPage> {
               icon: const Icon(Icons.refresh_outlined, color: Color.fromRGBO(255, 255, 255, 0.9), size: 30),
               tooltip: "refresh",
               onPressed: () => {
-
+                setState(() {
+                  dinosaurs = fetchDinosaurs(GET_DINOSAURS);
+                })
               },
               mouseCursor: SystemMouseCursors.click,
           ),
