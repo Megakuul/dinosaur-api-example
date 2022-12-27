@@ -11,8 +11,6 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-TextEditingController _searchControlr = TextEditingController();
-
 final String GET_DINOSAURS = "https://${dotenv.env['API_URL']}/dinosaurs";
 final String GET_DINOSAUR = "https://${dotenv.env['API_URL']}/dinosaur?name=";
 final String POST_DINOSAUR = "https://${dotenv.env['API_URL']}/dinosaur";
@@ -45,6 +43,11 @@ class mainPage extends StatefulWidget {
 
 class _mainPageState extends State<mainPage> {
   late Future<List<dynamic>> dinosaurs;
+
+  TextEditingController remDinosaurContr = TextEditingController();
+  TextEditingController addDinosaurNameContr = TextEditingController();
+  TextEditingController addDinosaurDescContr = TextEditingController();
+  TextEditingController addDinosaurCreatorContr = TextEditingController();
   
   @override
   void initState() {
@@ -63,7 +66,6 @@ class _mainPageState extends State<mainPage> {
             height: 30,
             width: MediaQuery.of(context).size.width / 4,
             child: TextField(
-                controller: _searchControlr,
                 cursorColor: Colors.white,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
@@ -83,7 +85,7 @@ class _mainPageState extends State<mainPage> {
           IconButton(
               padding: const EdgeInsets.only(left: 20, right: 20),
               icon: const Icon(Icons.refresh_outlined, color: Color.fromRGBO(255, 255, 255, 0.9), size: 30),
-              tooltip: "refresh",
+              tooltip: "Refresh",
               onPressed: () => {
                 setState(() {
                   dinosaurs = fetchDinosaurs(GET_DINOSAURS);
@@ -95,18 +97,89 @@ class _mainPageState extends State<mainPage> {
             padding: const EdgeInsets.only(left: 20, right: 20),
             icon: const Icon(Icons.add_box_outlined, color: Color.fromRGBO(255, 255, 255, 0.9), size: 30),
             tooltip: "Add Dinosaur",
-            onPressed: () => {
-
-            },
+            onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Add Dinosaur"),
+                  content: Container(
+                    height: 150,
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: addDinosaurNameContr,
+                          decoration: const InputDecoration(hintText: "Name"),
+                        ),
+                        TextField(
+                          controller: addDinosaurDescContr,
+                          decoration: const InputDecoration(hintText: "Description"),
+                        ),
+                        TextField(
+                          controller: addDinosaurCreatorContr,
+                          decoration: const InputDecoration(hintText: "Creator"),
+                        )
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Cancel")
+                    ),
+                    TextButton(
+                        onPressed: () async => {
+                          if (await postDinosaur(POST_DINOSAUR, {
+                            "name": addDinosaurNameContr.text,
+                            "description": addDinosaurDescContr.text,
+                            "creator": addDinosaurCreatorContr.text
+                          })){
+                            setState(() => {
+                              dinosaurs = fetchDinosaurs(GET_DINOSAURS)
+                            }),
+                            addDinosaurNameContr.text = "",
+                            addDinosaurDescContr.text = "",
+                            addDinosaurCreatorContr.text = "",
+                            Navigator.pop(context)
+                          },
+                        },
+                        child: const Text("OK")
+                    )
+                  ],
+                )
+            ),
             mouseCursor: SystemMouseCursors.click,
           ),
           IconButton(
             padding: const EdgeInsets.only(left: 20, right: 20),
             icon: const Icon(Icons.indeterminate_check_box_outlined, color: Color.fromRGBO(255, 255, 255, 0.9), size: 30),
             tooltip: "Remove Dinosaur",
-            onPressed: () => {
-
-            },
+            onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Delete Dinosaur"),
+                  content: TextField(
+                    decoration: const InputDecoration(hintText: "Name"),
+                    controller: remDinosaurContr,
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Cancel")
+                    ),
+                    TextButton(
+                        onPressed: () async => {
+                          if (await deleteDinosaur(DELETE_DINOSAUR + remDinosaurContr.text)) {
+                            setState(() => {
+                              dinosaurs = fetchDinosaurs(GET_DINOSAURS)
+                            }),
+                            remDinosaurContr.text = ""
+                          },
+                          Navigator.pop(context)
+                        },
+                        child: const Text("OK")
+                    )
+                  ],
+                )
+            ),
             mouseCursor: SystemMouseCursors.click,
           ),
         ],
