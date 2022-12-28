@@ -3,10 +3,13 @@ import { Prisma, PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 const express = require("express");
+const cors = require('cors');
 
 const port = process.env.PORT;
 
 const app = express();
+
+app.use(cors());
  
 app.use(express.json());
 
@@ -29,10 +32,12 @@ app.get("/dinosaur", async (req: any, res: any) => {
     try {
         const dinosaur = await prisma.dinosaur.findMany({
             where: {
-                name: dinosaurname
+                name: {
+                    contains: dinosaurname
+                }
             }
         });
-    
+        
         res.json(dinosaur);
     } catch (error) {
         console.log(error);
@@ -65,7 +70,6 @@ app.delete("/dinosaur", async (req: any, res: any) => {
                 name: dinosaurname
             }
         })
-    
         res.json({dinosaur});
     } catch (error) {
         console.log(error);

@@ -16,6 +16,6 @@ RUN npm install
 
 COPY . .
 
-CMD npx prisma migrate deploy
+#CMD npx prisma migrate deploy
 
 CMD npm start

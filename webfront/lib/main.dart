@@ -183,18 +183,13 @@ class _mainPageState extends State<mainPage> {
             mouseCursor: SystemMouseCursors.click,
           ),
         ],
-        title: AdvText(
-          text: widget.title,
-          fontWeight: FontWeight.w900,
-          fontSize: 30,
-          gradient: const LinearGradient(
-              colors: [
-                Color.fromRGBO(255, 255, 255, 0.9),
-                Color.fromRGBO(255, 255, 255, 0.4)
-              ],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight
-          ),
+        title: const Text(
+          "Dinosaur API",
+          style: TextStyle(
+            color: Colors.white70,
+            fontSize: 30,
+            fontWeight: FontWeight.bold
+          )
         )
       ),
       body: Center(

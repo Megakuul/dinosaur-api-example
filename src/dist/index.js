@@ -39,8 +39,10 @@ exports.__esModule = true;
 var client_1 = require("@prisma/client");
 var prisma = new client_1.PrismaClient();
 var express = require("express");
+var cors = require('cors');
 var port = process.env.PORT;
 var app = express();
+app.use(cors());
 app.use(express.json());
 app.get("/dinosaurs", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var test, dinosaurs, error_1;
@@ -76,7 +78,9 @@ app.get("/dinosaur", function (req, res) { return __awaiter(void 0, void 0, void
                 _a.trys.push([1, 3, , 4]);
                 return [4 /*yield*/, prisma.dinosaur.findMany({
                         where: {
-                            name: dinosaurname
+                            name: {
+                                contains: dinosaurname
+                            }
                         }
                     })];
             case 2:
