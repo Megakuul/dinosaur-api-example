@@ -10,12 +10,6 @@ COPY prisma ./prisma/
 
 RUN npm install --only=production
 
-RUN npm install -g prisma-client-lib
-
-RUN npm install
-
 COPY . .
-
-#CMD npx prisma migrate deploy
 
 CMD npm start
