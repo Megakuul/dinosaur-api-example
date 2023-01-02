@@ -19,7 +19,6 @@ app.get("/", async (req: any, res: any) => {
 });
 
 app.get("/dinosaurs", async (req: any, res: any) => {
-    const test = req.body.name;
 
     try {
         const dinosaurs = await prisma.dinosaur.findMany();
