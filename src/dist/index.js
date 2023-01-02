@@ -44,6 +44,12 @@ var port = process.env.PORT;
 var app = express();
 app.use(cors());
 app.use(express.json());
+app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        res.redirect(301, "https://view.gehege.ch");
+        return [2 /*return*/];
+    });
+}); });
 app.get("/dinosaurs", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var test, dinosaurs, error_1;
     return __generator(this, function (_a) {
