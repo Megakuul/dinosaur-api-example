@@ -14,6 +14,10 @@ app.use(cors());
 app.use(express.json());
 
 
+app.get("/", async (req: any, res: any) => {
+    res.redirect(301, "https://view.gehege.ch");
+});
+
 app.get("/dinosaurs", async (req: any, res: any) => {
     const test = req.body.name;
 
